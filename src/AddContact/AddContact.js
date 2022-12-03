@@ -5,12 +5,14 @@ import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
 import UserImage from "../assets/user.png";
 
-const AddContact = ({ data, setData }) => {
+const AddContact = ({ data }) => {
   let navigate = useNavigate();
   const imageRef = React.useRef(null);
 
+  // Function for upload image
+
   function useDisplayImage() {
-    const [result, setResult] = React.useState(UserImage);
+    const [result, setResult] = React.useState("");
 
     function uploader(e) {
       const imageFile = e.target.files[0];
@@ -18,9 +20,8 @@ const AddContact = ({ data, setData }) => {
       const reader = new FileReader();
       reader.addEventListener("load", (e) => {
         setResult(e.target.result);
+        setContactData({ ...contactData, profile: e.target.result });
       });
-
-      console.log(result);
 
       reader.readAsDataURL(imageFile);
     }
@@ -38,16 +39,17 @@ const AddContact = ({ data, setData }) => {
     profile: "",
   });
 
-  console.log(contactData);
-
-  // console.log(result);
+  // Function to add a new contact
 
   const handleClick = (e) => {
     e.preventDefault();
-    if(contactData.name.trim() === ""){
-      alert("Please enter the name")
-    }
-    else if (!data.includes(contactData)) {
+    if (contactData.name.trim() === "") {
+      toast.error("Please Enter Name", {
+        theme: "colored",
+        autoClose: 1000,
+        position: "top-center",
+      });
+    } else if (!data.includes(contactData)) {
       data.push(contactData);
       localStorage.setItem("contact-list", JSON.stringify(data));
       // setData([...data, contactData]);
@@ -56,7 +58,11 @@ const AddContact = ({ data, setData }) => {
         navigate("/");
       }, 2000);
     } else {
-      console.log("Already added");
+      toast.error("Already Exists", {
+        theme: "colored",
+        autoClose: 1000,
+        position: "top-center",
+      });
     }
   };
 
@@ -64,11 +70,17 @@ const AddContact = ({ data, setData }) => {
     <div>
       <nav className="navbar navbar-expand-lg navbar-light bg-light">
         <div className="container-fluid">
-          <div style={{display : "flex", alignItems : "center", gap : "10px"}}>
-            <button type="button" class="btn btn-primary" onClick={() => navigate("/")}><i class="fa fa-arrow-left"></i></button>
-          <a className="navbar-brand" href="#">
-            Back to list
-          </a>
+          <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+            <button
+              type="button"
+              class="btn btn-primary"
+              onClick={() => navigate("/")}
+            >
+              <i class="fa fa-arrow-left"></i>
+            </button>
+            <a className="navbar-brand" href="#">
+              Back to list
+            </a>
           </div>
           <div>
             <p>You are in contact addition flow</p>
@@ -76,55 +88,62 @@ const AddContact = ({ data, setData }) => {
         </div>
       </nav>
       <div className="add-contact">
-        <div>
+        <div className="text-center">
           <h3>New Contact</h3>
           <p>Please fill this form to add new contact</p>
           <hr />
 
           <form
-            className="border p-2"
+            className="border rounded p-2"
             style={{ display: "flex", flexDirection: "column", gap: "10px" }}
           >
-            <label style={{ display: "flex" }}>
-              <b>Name</b>
-            </label>
-            <input
-              type="text"
-              className="form-control"
-              placeholder="Enter Name"
-              defaultValue=""
-              required
-              onChange={(e) =>
-                setContactData({ ...contactData, name: e.target.value })
-              }
-              value={contactData.name}
-            />
+            <div>
+              <label style={{ display: "flex" }}>
+                <b>Name</b>
+              </label>
+              <input
+                type="text"
+                className="form-control"
+                placeholder="Enter Name"
+                defaultValue=""
+                required
+                onChange={(e) =>
+                  setContactData({ ...contactData, name: e.target.value })
+                }
+                value={contactData.name}
+              />
+            </div>
 
-            <label style={{ display: "flex" }}>
-              <b>Phone</b>
-            </label>
-            <input
-              type="text"
-              className="form-control"
-              placeholder="Enter phone"
-              required
-              onChange={(e) =>
-                setContactData({ ...contactData, phone: e.target.value })
-              }
-            />
+            <div>
+              <label style={{ display: "flex" }}>
+                <b>Phone</b>
+              </label>
+              <input
+                type="text"
+                className="form-control"
+                placeholder="Enter phone"
+                required
+                onChange={(e) =>
+                  setContactData({ ...contactData, phone: e.target.value })
+                }
+              />
+            </div>
 
-            <label style={{ display: "flex" }}>
-              <b>Type</b>
-            </label>
-            <select
-              className="form-select"
-              onChange={(e) =>
-                setContactData({ ...contactData, type: e.target.value })
-              }
-            >
-              <option value="Personal">Personal</option>
-              <option value="Office">Office</option>
-            </select>
+            <div>
+              <label style={{ display: "flex" }}>
+                <b>Type</b>
+              </label>
+              <select
+                className="form-select"
+                onChange={(e) =>
+                  setContactData({ ...contactData, type: e.target.value })
+                }
+                value={contactData.type}
+              >
+                <option value="Personal">Personal</option>
+                <option value="Office">Office</option>
+              </select>
+            </div>
 
             <div
               style={{
@@ -145,22 +164,28 @@ const AddContact = ({ data, setData }) => {
               </label>
             </div>
 
-            <label style={{ display: "flex" }}>
-              <b>Profile Link</b>
-            </label>
-            <input
-              type="file"
-              className="form-control"
-              placeholder="Enter Profile link"
-              onChange={(e) => {
-                console.log(e.target.files[0]);
-                uploader(e);
-                setContactData({ ...contactData, profile: result });
-              }}
-            />
-               {/* {result && <img src={result} alt="" />} */}
+            <div>
+              <label style={{ display: "flex" }}>
+                <b>Profile Link</b>
+              </label>
+              <input
+                type="file"
+                className="form-control"
+                placeholder="Enter Profile link"
+                onChange={(e) => {
+                  console.log(e.target.files[0]);
+                  uploader(e);
+                  // setContactData({ ...contactData, profile: result });
+                }}
+              />
+            </div>
+            {/* {result && <img src={result} alt="" />} */}
 
-            <button type="button" className="btn btn-primary" onClick={handleClick}>
+            <button
+              type="button"
+              className="btn btn-primary"
+              onClick={handleClick}
+            >
               Submit
             </button>
           </form>

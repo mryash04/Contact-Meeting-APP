@@ -15,7 +15,13 @@
 /* input[type=text]:focus{
     background-color : #ddd;
     outline : none;
-} */
+} */ 
+
+.input-container{
+    display : flex;
+    align-items : center;
+    gap : 10px;
+}
 
 hr{
     border : 1px solid #f1f1f1;
