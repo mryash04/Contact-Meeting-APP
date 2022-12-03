@@ -43,7 +43,10 @@ const AddContact = ({ data, setData }) => {
 
   const handleClick = (e) => {
     e.preventDefault();
-    if (!data.includes(contactData)) {
+    if(contactData.name.trim() === ""){
+      alert("Please enter the name")
+    }
+    else if (!data.includes(contactData)) {
       data.push(contactData);
       localStorage.setItem("contact-list", JSON.stringify(data));
       // setData([...data, contactData]);
@@ -88,10 +91,12 @@ const AddContact = ({ data, setData }) => {
               type="text"
               className="form-control"
               placeholder="Enter Name"
+              defaultValue=""
               required
               onChange={(e) =>
                 setContactData({ ...contactData, name: e.target.value })
               }
+              value={contactData.name}
             />
 
             <label style={{ display: "flex" }}>
@@ -154,7 +159,7 @@ const AddContact = ({ data, setData }) => {
             />
                {/* {result && <img src={result} alt="" />} */}
 
-            <button className="btn btn-primary" onClick={handleClick}>
+            <button type="button" className="btn btn-primary" onClick={handleClick}>
               Submit
             </button>
           </form>
