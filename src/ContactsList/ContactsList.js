@@ -4,6 +4,7 @@ import Data from '../Data';
 import NoDataImage from "../assets/nodata.webp";
 import { useNavigate } from 'react-router-dom';
 import UserImage from "../assets/user.png";
+import {toast} from "react-toastify";
 
 const ContactsList = ({data, setData, editContactData, setEditContactData,setEditID}) => {
 
@@ -19,6 +20,7 @@ const ContactsList = ({data, setData, editContactData, setEditContactData,setEdi
         const newData = data.filter((value, index) => index !== deleteUserId);
         localStorage.setItem("contact-list", JSON.stringify(newData));
         setData(newData);
+        toast.success("Contact Is Deleted Succesfully", {theme : "colored"})
     }
 
     const handleEditContact = (id, value) => {

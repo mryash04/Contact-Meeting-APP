@@ -3,13 +3,14 @@ import "./AddContact.css";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
+import UserImage from "../assets/user.png";
 
 const AddContact = ({ data, setData }) => {
   let navigate = useNavigate();
   const imageRef = React.useRef(null);
 
   function useDisplayImage() {
-    const [result, setResult] = React.useState("");
+    const [result, setResult] = React.useState(UserImage);
 
     function uploader(e) {
       const imageFile = e.target.files[0];
@@ -34,7 +35,7 @@ const AddContact = ({ data, setData }) => {
     phone: "",
     type: "",
     whatsapp: false,
-    profile: JSON.stringify(result),
+    profile: "",
   });
 
   console.log(contactData);
