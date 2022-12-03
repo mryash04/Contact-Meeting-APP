@@ -6,23 +6,47 @@ import { useNavigate } from "react-router-dom";
 
 const AddContact = ({ data, setData }) => {
   let navigate = useNavigate();
+  const imageRef = React.useRef(null);
+
+  function useDisplayImage() {
+    const [result, setResult] = React.useState("");
+
+    function uploader(e) {
+      const imageFile = e.target.files[0];
+
+      const reader = new FileReader();
+      reader.addEventListener("load", (e) => {
+        setResult(e.target.result);
+      });
+
+      console.log(result);
+
+      reader.readAsDataURL(imageFile);
+    }
+
+    return { result, uploader };
+  }
+
+  const { result, uploader } = useDisplayImage();
 
   const [contactData, setContactData] = React.useState({
     name: "",
     phone: "",
     type: "",
     whatsapp: false,
-    profile: "",
+    profile: JSON.stringify(result),
   });
 
-  console.log(data);
+  console.log(contactData);
+
+  // console.log(result);
 
   const handleClick = (e) => {
     e.preventDefault();
     if (!data.includes(contactData)) {
       data.push(contactData);
       localStorage.setItem("contact-list", JSON.stringify(data));
-      setData([...data, contactData]);
+      // setData([...data, contactData]);
       toast.success("New Contact Is Added Succesfully", { theme: "colored" });
       setTimeout(() => {
         navigate("/");
@@ -36,9 +60,12 @@ const AddContact = ({ data, setData }) => {
     <div>
       <nav className="navbar navbar-expand-lg navbar-light bg-light">
         <div className="container-fluid">
+          <div style={{display : "flex", alignItems : "center", gap : "10px"}}>
+            <button type="button" class="btn btn-primary" onClick={() => navigate("/")}><i class="fa fa-arrow-left"></i></button>
           <a className="navbar-brand" href="#">
             Back to list
           </a>
+          </div>
           <div>
             <p>You are in contact addition flow</p>
           </div>
@@ -90,7 +117,7 @@ const AddContact = ({ data, setData }) => {
               }
             >
               <option value="Personal">Personal</option>
-              <option value="Professional">Professional</option>
+              <option value="Office">Office</option>
             </select>
 
             <div
@@ -121,9 +148,11 @@ const AddContact = ({ data, setData }) => {
               placeholder="Enter Profile link"
               onChange={(e) => {
                 console.log(e.target.files[0]);
-                setContactData({ ...contactData, profile: e.target.value });
+                uploader(e);
+                setContactData({ ...contactData, profile: result });
               }}
             />
+               {/* {result && <img src={result} alt="" />} */}
 
             <button className="btn btn-primary" onClick={handleClick}>
               Submit

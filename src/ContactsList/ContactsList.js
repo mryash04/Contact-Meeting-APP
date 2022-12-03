@@ -3,6 +3,7 @@ import 'bootstrap/dist/js/bootstrap.js';
 import Data from '../Data';
 import NoDataImage from "../assets/nodata.webp";
 import { useNavigate } from 'react-router-dom';
+import UserImage from "../assets/user.png";
 
 const ContactsList = ({data, setData, editContactData, setEditContactData,setEditID}) => {
 
@@ -38,7 +39,7 @@ const ContactsList = ({data, setData, editContactData, setEditContactData,setEdi
       <th scope="col">Phone</th>
       <th scope="col">Type</th>
       <th scope="col">Whatsapp</th>
-      <th scope="col">Profile</th>
+      {/* <th scope="col">Profile</th> */}
       <th scope="col">Actions</th>
     </tr>
   </thead>
@@ -46,11 +47,15 @@ const ContactsList = ({data, setData, editContactData, setEditContactData,setEdi
     {data.sort((a, b) => a.name.localeCompare(b.name)).map((value, index) => {
         return  <tr>
         <th scope="row">{index + 1}</th>
-          <td>{value.name}</td>
-          <td>{value.phone}</td>
-          <td>{value.type}</td>
+          <td style={{display : "flex", justifyContent : "center", alignItems : "center", gap : "10px"}}>
+          <img style={{height : "40px", width : "40px", borderRadius : "50%"}} src={value.profile === "" ? UserImage : value.profile} alt="profile" />
+            <span class="fw-bolder">{value.name === "" ? "No Data" : value.name}</span>
+            </td>
+          <td className='text-center'>{value.phone === "" ? "No Data" : value.phone}</td>
+          <td>{value.type === "" ? "No Data" : value.type}</td>
           <td>{value.whatsapp === true ? "Yes" : "No"}</td>
-          <td>{value.profile}</td>
+          {/* <td>
+          </td> */}
           <td className="d-flex justify-content-center">
             <button className='btn btn-primary mx-2' onClick={() => handleEditContact(index, value)}>Edit</button>
             <button className='btn btn-danger'data-bs-toggle="modal" data-bs-target="#exampleModal" onClick={() => setDeleteUserId(index)}>Delete</button>
